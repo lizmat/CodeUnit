@@ -30,13 +30,67 @@ multitude of uses.
 
 =head2 new
 
+=begin code :lang<raku>
+
+my $cu1 = CodeUnit.new;
+
+my $context = context;
+my $cu1 = CodeUnit.new(:$context);
+
+=end code
+
+The C<new> method instantiates a C<CodeUnit> object.  It takes an
+options C<:context> named argument, which should be specified with
+a value returned by the C<context> subroutine.
+
 =head2 eval
+
+=begin code :lang<raku>
+
+$cu.eval('my $a = 42');
+$cu.eval('say $a');  # 42
+
+=end code
+
+The C<eval> method evaluates the given string with Raku code within
+the context of the code unit, and returns the result of the evaluation.
 
 =head2 reset
 
+=begin code :lang<raku>
+
+$cu.reset;
+
+=end code
+
+The C<reset> method resets the context of the code unit to its initial
+state as (implicitely) specified with C<.new>.
+
 =head2 compiler-version
 
+=begin code :lang<raku>
+
+say $cu.compiler-version;
+# Welcome to Rakudo™ v2025.01.
+# Implementing the Raku® Programming Language v6.d.
+# Built on MoarVM version 2025.01.
+
+=end code
+
+The C<compiler-version> method returns the compiler version information,
+which is typically shown when starting a REPL.
+
 =head2 context-completions
+
+=begin code :lang<raku>
+
+.say for $cu.context-completions;
+
+=end code
+
+The C<context-completions> method returns an unsorted list of context
+completion candidates found in the context of the code unit, which are
+typically used to provide completions in a REPL (hence the name).
 
 =head1 SUBROUTINES
 
@@ -49,7 +103,8 @@ my $cu = CodeUnit.new(:$context);
 
 =end code
 
-=head2
+The C<context> subroutine returns a context object that can be used to
+initialize the context of a code unit with.
 
 =head1 AUTHOR
 
