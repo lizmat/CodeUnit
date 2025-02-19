@@ -1,0 +1,28 @@
+{
+  "auth": "zef:lizmat",
+  "authors": [
+    "Elizabeth Mattijsen"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "Provide a unit for execution of code",
+  "license": "Artistic-2.0",
+  "name": "CodeUnit",
+  "perl": "6.d",
+  "provides": {
+    "CodeUnit": "lib/CodeUnit.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "https://github.com/lizmat/CodeUnit.git",
+  "tags": [
+    "EVAL",
+    "REPL",
+    "STATE"
+  ],
+  "test-depends": [
+  ],
+  "version": "0.0.1"
+}

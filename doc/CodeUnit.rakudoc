@@ -1,0 +1,73 @@
+=begin pod
+
+=head1 NAME
+
+CodeUnit - provide a unit for execution of code
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use CodeUnit;
+
+my $cu = CodeUnit.new;
+$cu.eval('my $a = 42');
+$cu.eval('say $a');  # 42
+
+=end code
+
+=head1 DESCRIPTION
+
+The C<CodeUnit> distribution provides an interface to a compiler
+context that allows code to be evaluated by given strings, while
+maintaining context between states.
+
+As such it provides one of the underlying functionalities of a REPL
+(Read Evaluate Print Loop), but could be used by itself for a
+multitude of uses.
+
+=head1 METHODS
+
+=head2 new
+
+=head2 eval
+
+=head2 reset
+
+=head2 compiler-version
+
+=head2 context-completions
+
+=head1 SUBROUTINES
+
+=head2 context
+
+=begin code :lang<raku>
+
+my $context = context;
+my $cu = CodeUnit.new(:$context);
+
+=end code
+
+=head2
+
+=head1 AUTHOR
+
+Elizabeth Mattijsen <liz@raku.rocks>
+
+Source can be located at: https://github.com/lizmat/CodeUnit . Comments
+and Pull Requests are welcome.
+
+If you like this module, or what I'm doing more generally, committing to a
+L<small sponsorship|https://github.com/sponsors/lizmat/>  would mean a great
+deal to me!
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2025 Elizabeth Mattijsen
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
+
+# vim: expandtab shiftwidth=4

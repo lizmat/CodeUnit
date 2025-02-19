@@ -1,0 +1,11 @@
+use Test;
+
+use CodeUnit;
+
+plan 2;
+
+my $cu1 = CodeUnit.new;
+is-deeply $cu1.eval('my $a = 42'), 42, 'Could we eval';
+is-deeply $cu1.eval('$a'),         42, 'Did it survive';
+
+# vim: expandtab shiftwidth=4
