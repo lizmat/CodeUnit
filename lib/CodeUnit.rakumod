@@ -1,13 +1,13 @@
 #- prologue --------------------------------------------------------------------
 use nqp;  # Hopefully will be in core at some point
 
-enum Status <OK MORE-INPUT CONTROL>;
+my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
 class CodeUnit:ver<0.0.1>:auth<zef:lizmat> {
 
     # The low level compiler to be used
-    has Mu $.compiler = "Raku";
+    has Mu $.compiler is built(:bind) = "Raku";
 
     # The current NQP context that has all of the definitions that were
     # made in this session
@@ -19,7 +19,7 @@ class CodeUnit:ver<0.0.1>:auth<zef:lizmat> {
     has Bool $.multi-line-ok is rw = !%*ENV<RAKUDO_DISABLE_MULTILINE>;
 
     # Return state from evaluation
-    has Status $.state is rw = OK;
+    has Status $.state is rw is built(False) = OK;
 
     # Any exception that should be reported
     has Mu $.exception is rw is built(False);

@@ -14,6 +14,12 @@ use CodeUnit;
 my $cu = CodeUnit.new;
 $cu.eval('my $a = 42');
 $cu.eval('say $a');  # 42
+
+$cu.eval('say $b');
+with $cu.exception {
+    note .message.chomp;  # Variable '$b' is not declared...
+    $cu.exception = Nil;
+}
 ```
 
 DESCRIPTION
@@ -36,7 +42,25 @@ my $context = context;
 my $cu1 = CodeUnit.new(:$context);
 ```
 
-The `new` method instantiates a `CodeUnit` object. It takes an options `:context` named argument, which should be specified with a value returned by the `context` subroutine.
+The `new` method instantiates a `CodeUnit` object. It takes the following named arguments:
+
+### :context
+
+Optional. The `:context` named argument can be specified with a value returned by the `context` subroutine. If not specified, will assume a fresh context without any outer / caller lexicals visible.
+
+Used value available with the `.context` method.
+
+### :compiler
+
+Optional. The `:compiler` named argument can be specified to indicate the low level compiler object that sould be used. Can be specified as a string, in which case it will be used as an argument to the `nqp::getcomp` function to obtain the low level compiler object. Defaults to `"Raku"`.
+
+Used value available with the `.compiler` method.
+
+### :multi-line-ok
+
+Optional, Boolean. Indicate whether it is ok to interprete multiple lines of input as a single statement to evaluate. Defaults to `True` unless the `RAKUDO_DISABLE_MULTILINE` environment variable has been specified with a true value.
+
+Used value available with the `.multi-line-ok` method, and can be used as a left-value to change.
 
 eval
 ----
@@ -77,6 +101,37 @@ context-completions
 ```
 
 The `context-completions` method returns an unsorted list of context completion candidates found in the context of the code unit, which are typically used to provide completions in a REPL (hence the name).
+
+state
+-----
+
+The `state` method returns one of the `Status` enums to indicate the result of the last call to `.eval`. It can also be used as a left-value to set the state (usually to `OK`).
+
+exception
+---------
+
+```raku
+with $cu.exception {
+    note .message.chomp;  # Variable '$b' is not declared...
+    $cu.exception = Nil;
+}
+```
+
+The `exception` method returns the `Exception` object if anything went wrong in the `.eval` call. Note that this can also be the case even if the state is `OK`. Can also be used as a left-value to (re)set.
+
+ENUMS
+=====
+
+Status
+------
+
+The `Status` enum is exported: it is used by the `state` method to indicate the state of the last call to `.eval`. It provides the following states:
+
+  * OK (0) - evalution ok
+
+  * MORE-INPUT (1) - string looks like incomplete code
+
+  * CONTROL (2) - some kind of control statement was executed
 
 SUBROUTINES
 ===========

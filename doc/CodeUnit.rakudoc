@@ -14,6 +14,12 @@ my $cu = CodeUnit.new;
 $cu.eval('my $a = 42');
 $cu.eval('say $a');  # 42
 
+$cu.eval('say $b');
+with $cu.exception {
+    note .message.chomp;  # Variable '$b' is not declared...
+    $cu.exception = Nil;
+}
+
 =end code
 
 =head1 DESCRIPTION
@@ -39,9 +45,36 @@ my $cu1 = CodeUnit.new(:$context);
 
 =end code
 
-The C<new> method instantiates a C<CodeUnit> object.  It takes an
-options C<:context> named argument, which should be specified with
-a value returned by the C<context> subroutine.
+The C<new> method instantiates a C<CodeUnit> object.  It takes the
+following named arguments:
+
+=head3 :context
+
+Optional. The C<:context> named argument can be specified with a value
+returned by the C<context> subroutine.  If not specified, will
+assume a fresh context without any outer / caller lexicals visible.
+
+Used value available with the C<.context> method.
+
+=head3 :compiler
+
+Optional.  The C<:compiler> named argument can be specified to indicate
+the low level compiler object that sould be used.  Can be specified as
+a string, in which case it will be used as an argument to the
+C<nqp::getcomp> function to obtain the low level compiler object.
+Defaults to C<"Raku">.
+
+Used value available with the C<.compiler> method.
+
+=head3 :multi-line-ok
+
+Optional, Boolean. Indicate whether it is ok to interprete multiple
+lines of input as a single statement to evaluate.  Defaults to
+C<True> unless the C<RAKUDO_DISABLE_MULTILINE> environment variable
+has been specified with a true value.
+
+Used value available with the C<.multi-line-ok> method, and can be
+used as a left-value to change.
 
 =head2 eval
 
@@ -91,6 +124,39 @@ which is typically shown when starting a REPL.
 The C<context-completions> method returns an unsorted list of context
 completion candidates found in the context of the code unit, which are
 typically used to provide completions in a REPL (hence the name).
+
+=head2 state
+
+The C<state> method returns one of the C<Status> enums to indicate
+the result of the last call to C<.eval>.  It can also be used as a
+left-value to set the state (usually to C<OK>).
+
+=head2 exception
+
+=begin code :lang<raku>
+
+with $cu.exception {
+    note .message.chomp;  # Variable '$b' is not declared...
+    $cu.exception = Nil;
+}
+
+=end code
+
+The C<exception> method returns the C<Exception> object if anything
+went wrong in the C<.eval> call.  Note that this can also be the
+case even if the state is C<OK>.  Can also be used as a left-value
+to (re)set.
+
+=head1 ENUMS
+
+=head2 Status
+
+The C<Status> enum is exported: it is used by the C<state> method to
+indicate the state of the last call to C<.eval>.  It provides the
+following states:
+=item OK (0) - evalution ok
+=item MORE-INPUT (1) - string looks like incomplete code
+=item CONTROL (2) - some kind of control statement was executed
 
 =head1 SUBROUTINES
 
