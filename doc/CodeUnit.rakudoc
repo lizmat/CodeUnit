@@ -172,6 +172,14 @@ my $cu = CodeUnit.new(:$context);
 The C<context> subroutine returns a context object that can be used to
 initialize the context of a code unit with.
 
+=head1 CAVEATS
+
+By default, Raku does a lot of compile-time as well as run-time
+optimizations.  This may lead to lexical variables being optimized
+away, and thus become "invisible" to introspection.  If that appears
+to be the case, then starting Raku with C<--optimize=off> may make
+these "invisble" variables visible.
+
 =head1 AUTHOR
 
 Elizabeth Mattijsen <liz@raku.rocks>

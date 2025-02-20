@@ -146,6 +146,11 @@ my $cu = CodeUnit.new(:$context);
 
 The `context` subroutine returns a context object that can be used to initialize the context of a code unit with.
 
+CAVEATS
+=======
+
+By default, Raku does a lot of compile-time as well as run-time optimizations. This may lead to lexical variables being optimized away, and thus become "invisible" to introspection. If that appears to be the case, then starting Raku with `--optimize=off` may make these "invisble" variables visible.
+
 AUTHOR
 ======
 

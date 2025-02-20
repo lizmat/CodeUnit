@@ -2,5 +2,10 @@ Revision history for CodeUnit
 
 {{$NEXT}}
 
+0.0.2  2025-02-20T21:18:25+01:00
+    - Make sure that lowered away lexicals don't show up in
+      completions, as it will be impossible to get their value
+    - Added CAVEATS section in the pod
+
 0.0.1  2025-02-19T20:40:29+01:00
     - Initial version

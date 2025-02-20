@@ -4,7 +4,7 @@ use nqp;  # Hopefully will be in core at some point
 my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
-class CodeUnit:ver<0.0.1>:auth<zef:lizmat> {
+class CodeUnit:ver<0.0.2>:auth<zef:lizmat> {
 
     # The low level compiler to be used
     has Mu $.compiler is built(:bind) = "Raku";
@@ -135,7 +135,13 @@ class CodeUnit:ver<0.0.1>:auth<zef:lizmat> {
         my $iterator := nqp::iterator(nqp::ctxlexpad($!context));
         nqp::while(
           $iterator,
-          nqp::push($buffer, nqp::iterkey_s(nqp::shift($iterator)))
+          nqp::unless(
+            nqp::istype(
+              nqp::iterval(nqp::shift($iterator)),
+              Rakudo::Internals::LoweredAwayLexical
+            ),
+            nqp::push($buffer, nqp::iterkey_s($iterator))
+          )
         );
 
         my $PACKAGE := $!compiler.eval('$?PACKAGE', :outer_ctx($!context));
