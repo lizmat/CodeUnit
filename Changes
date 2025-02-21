@@ -2,6 +2,11 @@ Revision history for CodeUnit
 
 {{$NEXT}}
 
+0.0.3  2025-02-21T21:12:41+01:00
+    - Also save the exception for control exceptions, and turn
+      the X::ControlFlow::Return exception into CX::Return for
+      compatibility
+
 0.0.2  2025-02-20T21:18:25+01:00
     - Make sure that lowered away lexicals don't show up in
       completions, as it will be impossible to get their value

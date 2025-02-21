@@ -4,7 +4,7 @@ use nqp;  # Hopefully will be in core at some point
 my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
-class CodeUnit:ver<0.0.2>:auth<zef:lizmat> {
+class CodeUnit:ver<0.0.3>:auth<zef:lizmat> {
 
     # The low level compiler to be used
     has Mu $.compiler is built(:bind) = "Raku";
@@ -54,7 +54,8 @@ class CodeUnit:ver<0.0.2>:auth<zef:lizmat> {
             }
 
             when X::ControlFlow::Return {
-                $!state = CONTROL;
+                $!exception = CX::Return;
+                $!state     = CONTROL;
                 return Nil;
             }
 
@@ -84,7 +85,8 @@ class CodeUnit:ver<0.0.2>:auth<zef:lizmat> {
                 .resume;
             }
             default {
-                $!state = CONTROL;
+                $!exception = $_;
+                $!state     = CONTROL;
                 return Nil;
             }
         }
