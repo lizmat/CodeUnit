@@ -1,6 +1,8 @@
 Revision history for CodeUnit
 
 {{$NEXT}}
+    - Also keep changes in the grammar of an .eval in a
+      sufficiently new Rakudo (HEAD or 2025.03+)
 
 0.0.3  2025-02-21T21:12:41+01:00
     - Also save the exception for control exceptions, and turn

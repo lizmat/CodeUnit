@@ -24,12 +24,19 @@ class CodeUnit:ver<0.0.3>:auth<zef:lizmat> {
     # Any exception that should be reported
     has Mu $.exception is rw is built(False);
 
-    method TWEAK() {
+    # Grammar and actions to use in compilation
+    has $!grammar;
+    has $!actions;
+
+    method TWEAK(--> Nil) {
         $!compiler := nqp::getcomp(nqp::decont($!compiler))
           if nqp::istype($!compiler,Str);
 
         $!context       := nqp::decont($!context);
         $!reset-context := $!context;
+
+        $!grammar := nqp::null;
+        $!actions := nqp::null;
     }
 
     method eval(str $code) {
@@ -91,21 +98,25 @@ class CodeUnit:ver<0.0.3>:auth<zef:lizmat> {
             }
         }
 
-        # Performe the actual evaluation magic
+        # Perform the actual evaluation magic
         my $*CTXSAVE  := self;
         my $*MAIN_CTX := $!context;
-        my $value := do {
-            $!compiler.eval(
-              $code,
-              :outer_ctx($!context),
-              :interactive(1),
-              |%_
-            );
-        }
+        my $*GRAMMAR;
+        %_<grammar> := $!grammar unless nqp::isnull($!grammar);
+        %_<actions> := $!actions unless nqp::isnull($!actions);
+        my $value := $!compiler.eval(
+          $code, :outer_ctx($!context), :interactive(1), |%_
+        );
 
         # Save the context state for the next evaluation
         $!state    = OK;
         $!context := $*MAIN_CTX;
+
+        # Code changed the grammar, make sure we use that from now on
+        if $*GRAMMAR -> $grammar {
+            $!grammar := $grammar;
+            $!actions := $grammar.actions;
+        }
 
         $value
     }
