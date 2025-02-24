@@ -4,7 +4,7 @@ use nqp;  # Hopefully will be in core at some point
 my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
-class CodeUnit:ver<0.0.4>:auth<zef:lizmat> {
+class CodeUnit:ver<0.0.5>:auth<zef:lizmat> {
 
     # The low level compiler to be used
     has Mu $.compiler is built(:bind) = "Raku";
@@ -50,8 +50,11 @@ class CodeUnit:ver<0.0.4>:auth<zef:lizmat> {
             }
 
             when X::AdHoc {
-                if .message eq 'Premature heredoc consumption'
-                  || .message.starts-with('Ending delimiter ') {
+                my str $message = .message;
+                if $message eq 'Premature heredoc consumption'
+                  || $message.starts-with('Ending delimiter ')
+                  || $message.starts-with("Couldn't find terminator")
+                  || $message.contains("is immediately followed by a combining codepoint") {
                     if $!multi-line-ok {
                         $!state = MORE-INPUT;
                         return Nil;
