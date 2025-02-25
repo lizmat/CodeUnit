@@ -174,11 +174,51 @@ initialize the context of a code unit with.
 
 =head1 CAVEATS
 
+=head2 "Invisible" variables
+
 By default, Raku does a lot of compile-time as well as run-time
 optimizations.  This may lead to lexical variables being optimized
 away, and thus become "invisible" to introspection.  If that appears
 to be the case, then starting Raku with C<--optimize=off> may make
 these "invisble" variables visible.
+
+=head2 Each call is a scope
+
+Because each call introduces its own scope, certain side-effects of this
+scoping behaviour may produce unexpected results and/or errors.  For
+example: C<my $a = 42>, followed by C<say $a>, is really:
+
+=begin code :lang<raku>
+
+my $a = 42;
+{
+    say $a;
+}
+
+=end code
+
+This works because the lexical variable C<$a> is visible from the scope
+that has the C<say>.
+
+Another example which you might expect to give at least a warning, but
+doesn't: C<my $a = 42;> followed by C<my $a = 666>, which would normally
+produce a worry: "Redeclaration of symbol '$a'", but doesn't here because
+they are different scopes:
+
+=begin code :lang<raku>
+
+my $a = 42;
+{
+    my $a = 666;
+}
+
+=end code
+
+As you can see, the second C<$a> shadows the first C<$a>, and is not a worry
+as such.
+
+Future versions of C<CodeUnit> may be able to work around this scoping
+behaviour.
 
 =head1 AUTHOR
 

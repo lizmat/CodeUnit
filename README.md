@@ -149,7 +149,37 @@ The `context` subroutine returns a context object that can be used to initialize
 CAVEATS
 =======
 
+"Invisible" variables
+---------------------
+
 By default, Raku does a lot of compile-time as well as run-time optimizations. This may lead to lexical variables being optimized away, and thus become "invisible" to introspection. If that appears to be the case, then starting Raku with `--optimize=off` may make these "invisble" variables visible.
+
+Each call is a scope
+--------------------
+
+Because each call introduces its own scope, certain side-effects of this scoping behaviour may produce unexpected results and/or errors. For example: `my $a = 42`, followed by `say $a`, is really:
+
+```raku
+my $a = 42;
+{
+    say $a;
+}
+```
+
+This works because the lexical variable `$a` is visible from the scope that has the `say`.
+
+Another example which you might expect to give at least a warning, but doesn't: `my $a = 42;` followed by `my $a = 666`, which would normally produce a worry: "Redeclaration of symbol '$a'", but doesn't here because they are different scopes:
+
+```raku
+my $a = 42;
+{
+    my $a = 666;
+}
+```
+
+As you can see, the second `$a` shadows the first `$a`, and is not a worry as such.
+
+Future versions of `CodeUnit` may be able to work around this scoping behaviour.
 
 AUTHOR
 ======
