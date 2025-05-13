@@ -4,7 +4,7 @@ use nqp;  # Hopefully will be in core at some point
 my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
-class CodeUnit:ver<0.0.5>:auth<zef:lizmat> {
+class CodeUnit:ver<0.0.6>:auth<zef:lizmat> {
 
     # The low level compiler to be used
     has Mu $.compiler is built(:bind) = "Raku";

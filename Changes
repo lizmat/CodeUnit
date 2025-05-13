@@ -1,6 +1,8 @@
 Revision history for CodeUnit
 
 {{$NEXT}}
+
+0.0.6  2025-05-13T19:18:16+02:00
     - Add support for :lang, :grammar and :actions named
       arguments to .new, allowing for quicker import of
       operators
