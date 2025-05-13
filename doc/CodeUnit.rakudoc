@@ -41,7 +41,10 @@ multitude of uses.
 my $cu1 = CodeUnit.new;
 
 my $context = context;
-my $cu1 = CodeUnit.new(:$context);
+my $cu2 = CodeUnit.new(:$context);
+
+# start with grammar including any mixins
+my $cu3 = CodeUnit.new(:lang(BEGIN $*LANG));
 
 =end code
 
@@ -75,6 +78,25 @@ has been specified with a true value.
 
 Used value available with the C<.multi-line-ok> method, and can be
 used as a left-value to change.
+
+=head3 :grammar
+
+Optional.  Specifies the C<grammar> to be used initially.  Defaults
+to the standard Raku grammar, or to what has been specified with C<:lang>.
+
+Value available with the C<.grammar> method.
+
+=head3 :actions
+
+Optional.  Specifies the action class to be used.  Defaults to the
+standard Raku actions, or to what the C<.actions> method returns on what
+is specified with C<:lang>.
+
+=head3 :lang
+
+Optional.  Specified which C<grammar> / action class to be used.  Defaults
+to the standard Raku C<grammar> and action class.  If specified, this is
+usually C<BEGIN $*LANG>;
 
 =head2 eval
 

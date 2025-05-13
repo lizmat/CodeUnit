@@ -25,18 +25,20 @@ class CodeUnit:ver<0.0.5>:auth<zef:lizmat> {
     has Mu $.exception is rw is built(False);
 
     # Grammar and actions to use in compilation
-    has $!grammar;
-    has $!actions;
+    has $.grammar is built(:bind) = nqp::null;
+    has $.actions is built(:bind) = nqp::null;
 
-    method TWEAK(--> Nil) {
+    method TWEAK(Mu :$lang --> Nil) {
         $!compiler := nqp::getcomp(nqp::decont($!compiler))
           if nqp::istype($!compiler,Str);
 
         $!context       := nqp::decont($!context);
         $!reset-context := $!context;
 
-        $!grammar := nqp::null;
-        $!actions := nqp::null;
+        with $lang {
+            $!grammar := $_;
+            $!actions := .actions;
+        }
     }
 
     method eval(str $code) {

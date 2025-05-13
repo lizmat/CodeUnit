@@ -39,7 +39,10 @@ new
 my $cu1 = CodeUnit.new;
 
 my $context = context;
-my $cu1 = CodeUnit.new(:$context);
+my $cu2 = CodeUnit.new(:$context);
+
+# start with grammar including any mixins
+my $cu3 = CodeUnit.new(:lang(BEGIN $*LANG));
 ```
 
 The `new` method instantiates a `CodeUnit` object. It takes the following named arguments:
@@ -61,6 +64,20 @@ Used value available with the `.compiler` method.
 Optional, Boolean. Indicate whether it is ok to interprete multiple lines of input as a single statement to evaluate. Defaults to `True` unless the `RAKUDO_DISABLE_MULTILINE` environment variable has been specified with a true value.
 
 Used value available with the `.multi-line-ok` method, and can be used as a left-value to change.
+
+### :grammar
+
+Optional. Specifies the `grammar` to be used initially. Defaults to the standard Raku grammar, or to what has been specified with `:lang`.
+
+Value available with the `.grammar` method.
+
+### :actions
+
+Optional. Specifies the action class to be used. Defaults to the standard Raku actions, or to what the `.actions` method returns on what is specified with `:lang`.
+
+### :lang
+
+Optional. Specified which `grammar` / action class to be used. Defaults to the standard Raku `grammar` and action class. If specified, this is usually `BEGIN $*LANG`;
 
 eval
 ----
