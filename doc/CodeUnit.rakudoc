@@ -7,7 +7,6 @@ CodeUnit - provide a unit for execution of code
 =head1 SYNOPSIS
 
 =begin code :lang<raku>
-
 use CodeUnit;
 
 my $cu = CodeUnit.new;
@@ -19,7 +18,6 @@ with $cu.exception {
     note .message.chomp;  # Variable '$b' is not declared...
     $cu.exception = Nil;
 }
-
 =end code
 
 =head1 DESCRIPTION
@@ -37,15 +35,19 @@ multitude of uses.
 =head2 new
 
 =begin code :lang<raku>
-
 my $cu1 = CodeUnit.new;
 
-my $context = context;
+# use current context
+my $context = context;  # must be separate call
 my $cu2 = CodeUnit.new(:$context);
 
-# start with grammar including any mixins
-my $cu3 = CodeUnit.new(:lang(BEGIN $*LANG));
+# don't show warnings
+my $cu3 = CodeUnit.new(:keep-warnings);
+$cu3.eval(q/my $x; $x + 1/);                   # no output
+.note for $cu3.warnings.map(*.Str.lines.head); # show without backtrace
 
+# start with grammar including any mixins
+my $cu4 = CodeUnit.new(:lang(BEGIN $*LANG));
 =end code
 
 The C<new> method instantiates a C<CodeUnit> object.  It takes the
@@ -58,6 +60,20 @@ returned by the C<context> subroutine.  If not specified, will
 assume a fresh context without any outer / caller lexicals visible.
 
 Used value available with the C<.context> method.
+
+=head3 :keep-warnings
+
+Optional.  If specified with a true value, will cause any warnings to
+be stored in the C<CodeUnit> object rather than being shown on STDERR.
+The warnings (as C<CX::Warn> objects including their full stack-traces)
+are accessible with the C<warnings> method (which will also reset any
+warnings collected so far).
+
+=head3 :lang
+
+Optional.  Specified which C<grammar> / action class to be used.  Defaults
+to the standard Raku C<grammar> and action class.  If specified, this is
+usually C<BEGIN $*LANG>;
 
 =head3 :compiler
 
@@ -92,19 +108,11 @@ Optional.  Specifies the action class to be used.  Defaults to the
 standard Raku actions, or to what the C<.actions> method returns on what
 is specified with C<:lang>.
 
-=head3 :lang
-
-Optional.  Specified which C<grammar> / action class to be used.  Defaults
-to the standard Raku C<grammar> and action class.  If specified, this is
-usually C<BEGIN $*LANG>;
-
 =head2 eval
 
 =begin code :lang<raku>
-
 $cu.eval('my $a = 42');
 $cu.eval('say $a');  # 42
-
 =end code
 
 The C<eval> method evaluates the given string with Raku code within
@@ -113,9 +121,7 @@ the context of the code unit, and returns the result of the evaluation.
 =head2 reset
 
 =begin code :lang<raku>
-
 $cu.reset;
-
 =end code
 
 The C<reset> method resets the context of the code unit to its initial
@@ -124,12 +130,10 @@ state as (implicitely) specified with C<.new>.
 =head2 compiler-version
 
 =begin code :lang<raku>
-
 say $cu.compiler-version;
 # Welcome to Rakudo™ v2025.01.
 # Implementing the Raku® Programming Language v6.d.
 # Built on MoarVM version 2025.01.
-
 =end code
 
 The C<compiler-version> method returns the compiler version information,
@@ -138,9 +142,7 @@ which is typically shown when starting a REPL.
 =head2 context-completions
 
 =begin code :lang<raku>
-
 .say for $cu.context-completions;
-
 =end code
 
 The C<context-completions> method returns an unsorted list of context
@@ -156,18 +158,25 @@ left-value to set the state (usually to C<OK>).
 =head2 exception
 
 =begin code :lang<raku>
-
 with $cu.exception {
     note .message.chomp;  # Variable '$b' is not declared...
     $cu.exception = Nil;
 }
-
 =end code
 
 The C<exception> method returns the C<Exception> object if anything
 went wrong in the C<.eval> call.  Note that this can also be the
 case even if the state is C<OK>.  Can also be used as a left-value
 to (re)set.
+
+=head2 warnings
+
+=begin code :lang<raku>
+my $cu = CodeUnit.new(:keep-warnings);
+$cu.eval(q/my $x; $x + 1/);               # no output
+.note for $cu.warnings.map(*.Str.lines.head);
+# Use of uninitialized value $x of type Any in numeric context
+=end code
 
 =head1 ENUMS
 
@@ -185,10 +194,8 @@ following states:
 =head2 context
 
 =begin code :lang<raku>
-
 my $context = context;
 my $cu = CodeUnit.new(:$context);
-
 =end code
 
 The C<context> subroutine returns a context object that can be used to
@@ -211,12 +218,10 @@ scoping behaviour may produce unexpected results and/or errors.  For
 example: C<my $a = 42>, followed by C<say $a>, is really:
 
 =begin code :lang<raku>
-
 my $a = 42;
 {
     say $a;
 }
-
 =end code
 
 This works because the lexical variable C<$a> is visible from the scope
@@ -228,12 +233,10 @@ produce a worry: "Redeclaration of symbol '$a'", but doesn't here because
 they are different scopes:
 
 =begin code :lang<raku>
-
 my $a = 42;
 {
     my $a = 666;
 }
-
 =end code
 
 As you can see, the second C<$a> shadows the first C<$a>, and is not a worry

@@ -38,11 +38,17 @@ new
 ```raku
 my $cu1 = CodeUnit.new;
 
-my $context = context;
+# use current context
+my $context = context;  # must be separate call
 my $cu2 = CodeUnit.new(:$context);
 
+# don't show warnings
+my $cu3 = CodeUnit.new(:keep-warnings);
+$cu3.eval(q/my $x; $x + 1/);                   # no output
+.note for $cu3.warnings.map(*.Str.lines.head); # show without backtrace
+
 # start with grammar including any mixins
-my $cu3 = CodeUnit.new(:lang(BEGIN $*LANG));
+my $cu4 = CodeUnit.new(:lang(BEGIN $*LANG));
 ```
 
 The `new` method instantiates a `CodeUnit` object. It takes the following named arguments:
@@ -52,6 +58,14 @@ The `new` method instantiates a `CodeUnit` object. It takes the following named 
 Optional. The `:context` named argument can be specified with a value returned by the `context` subroutine. If not specified, will assume a fresh context without any outer / caller lexicals visible.
 
 Used value available with the `.context` method.
+
+### :keep-warnings
+
+Optional. If specified with a true value, will cause any warnings to be stored in the `CodeUnit` object rather than being shown on STDERR. The warnings (as `CX::Warn` objects including their full stack-traces) are accessible with the `warnings` method (which will also reset any warnings collected so far).
+
+### :lang
+
+Optional. Specified which `grammar` / action class to be used. Defaults to the standard Raku `grammar` and action class. If specified, this is usually `BEGIN $*LANG`;
 
 ### :compiler
 
@@ -74,10 +88,6 @@ Value available with the `.grammar` method.
 ### :actions
 
 Optional. Specifies the action class to be used. Defaults to the standard Raku actions, or to what the `.actions` method returns on what is specified with `:lang`.
-
-### :lang
-
-Optional. Specified which `grammar` / action class to be used. Defaults to the standard Raku `grammar` and action class. If specified, this is usually `BEGIN $*LANG`;
 
 eval
 ----
@@ -135,6 +145,16 @@ with $cu.exception {
 ```
 
 The `exception` method returns the `Exception` object if anything went wrong in the `.eval` call. Note that this can also be the case even if the state is `OK`. Can also be used as a left-value to (re)set.
+
+warnings
+--------
+
+```raku
+my $cu = CodeUnit.new(:keep-warnings);
+$cu.eval(q/my $x; $x + 1/);               # no output
+.note for $cu.warnings.map(*.Str.lines.head);
+# Use of uninitialized value $x of type Any in numeric context
+```
 
 ENUMS
 =====

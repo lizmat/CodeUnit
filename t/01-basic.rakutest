@@ -2,7 +2,7 @@ use Test;
 
 use CodeUnit;
 
-plan 4;
+plan 6;
 
 my $cu1 = CodeUnit.new;
 is-deeply $cu1.eval('my $a = 42'), 42, 'Could we eval';
@@ -10,7 +10,14 @@ is-deeply $cu1.eval('$a'),         42, 'Did it survive';
 
 is $cu1.eval('sub infix:<foo>($a,$b) { "foo" }').name, "infix:<foo>",
   'did we get an evalled infix op';
-todo("needs Rakudo post commit 70872b987b680379");
+todo("needs Rakudo post commit 70872b987b680379, 2025.03 or higher");
 is $cu1.eval('42 foo 666'), "foo", 'did the infix op execute';
+
+my $cu2 = CodeUnit.new(:keep-warnings);
+$cu2.eval(q/my $x; $x + 1/);
+is $cu2.warnings.map(*.Str.lines.head),
+  'Use of uninitialized value $x of type Any in numeric context',
+  "check if warning was captured";
+is-deeply $cu2.warnings, (), 'all warnings gone';
 
 # vim: expandtab shiftwidth=4

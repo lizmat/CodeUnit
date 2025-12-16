@@ -24,6 +24,10 @@ class CodeUnit:ver<0.0.6>:auth<zef:lizmat> {
     # Any exception that should be reported
     has Mu $.exception is rw is built(False);
 
+    # Keep warnings (default: show as they occur)
+    has Bool $.keep-warnings;
+    has @!warnings;
+
     # Grammar and actions to use in compilation
     has $.grammar is built(:bind) = nqp::null;
     has $.actions is built(:bind) = nqp::null;
@@ -93,7 +97,7 @@ class CodeUnit:ver<0.0.6>:auth<zef:lizmat> {
                 .rethrow;
             }
             when CX::Warn {
-                .gist.say;
+                $!keep-warnings ?? @!warnings.push($_) !! .gist.note;
                 .resume;
             }
             default {
@@ -167,6 +171,8 @@ class CodeUnit:ver<0.0.6>:auth<zef:lizmat> {
 
         $buffer.List
     }
+
+    method warnings() { @!warnings ?? @!warnings.splice.List !! BEGIN () }
 }
 
 #- helper subs -----------------------------------------------------------------

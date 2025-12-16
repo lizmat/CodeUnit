@@ -1,6 +1,11 @@
 Revision history for CodeUnit
 
 {{$NEXT}}
+    - Show warnings on STDERR by default, not STDOUT
+    - Add support for :keep-warnings attribute / flag
+    - Add method "warnings" produce warnings seen, and
+      remove them
+    - Modernize META info
 
 0.0.6  2025-05-13T19:18:16+02:00
     - Add support for :lang, :grammar and :actions named
