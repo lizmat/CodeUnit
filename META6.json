@@ -3,6 +3,8 @@
   "authors": [
     "Elizabeth Mattijsen"
   ],
+  "build-depends": [
+  ],
   "depends": [
   ],
   "description": "Provide a unit for execution of code",
@@ -13,6 +15,9 @@
     "CodeUnit": "lib/CodeUnit.rakumod"
   },
   "raku": "6.d",
+  "resources": [
+  ],
+  "source-url": "https://github.com/lizmat/CodeUnit.git",
   "support": {
     "bugtracker": "https://github.com/lizmat/CodeUnit/issues",
     "email": "liz@raku.rocks",
@@ -23,5 +28,7 @@
     "REPL",
     "STATE"
   ],
-  "version": "0.0.6"
+  "test-depends": [
+  ],
+  "version": "0.0.7"
 }
