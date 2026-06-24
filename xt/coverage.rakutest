@@ -1,6 +1,6 @@
 use Test::Coverage;
 
 todo "needs more tests";
-must-be=complete;
+must-be-complete;
 
 # vim: expandtab shiftwidth=4
