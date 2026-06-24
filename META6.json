@@ -17,11 +17,11 @@
   "raku": "6.d",
   "resources": [
   ],
-  "source-url": "https://github.com/lizmat/CodeUnit.git",
+  "source-url": "https://codeberg.org/lizmat/CodeUnit.git",
   "support": {
-    "bugtracker": "https://github.com/lizmat/CodeUnit/issues",
+    "bugtracker": "https://codeberg.org/lizmat/CodeUnit/issues",
     "email": "liz@raku.rocks",
-    "source": "https://github.com/lizmat/CodeUnit.git"
+    "source": "https://codeberg.org/lizmat/CodeUnit.git"
   },
   "tags": [
     "EVAL",
