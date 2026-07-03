@@ -1,6 +1,8 @@
 Revision history for CodeUnit
 
 {{$NEXT}}
+
+0.0.10  2026-07-03T17:38:24+02:00
     - Some small internal changes to handle possibly
       changed behaviour in RakuAST
 
