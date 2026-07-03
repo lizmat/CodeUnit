@@ -11,7 +11,7 @@ class CodeUnit:ver<0.0.9>:auth<zef:lizmat> {
 
     # The current NQP context that has all of the definitions that were
     # made in this session
-    has Mu $.context is built(:bind) = nqp::null;
+    has Mu $.context;
     has Mu $!reset-context;
 
     # Whether it is allowed to have code evalled stretching over
@@ -29,19 +29,31 @@ class CodeUnit:ver<0.0.9>:auth<zef:lizmat> {
     has @!warnings;
 
     # Grammar and actions to use in compilation
-    has $.grammar is built(:bind) = nqp::null;
-    has $.actions is built(:bind) = nqp::null;
+    has $.grammar;
+    has $.actions;
 
-    method TWEAK(Mu :$lang --> Nil) {
+    method TWEAK(Mu :$lang, Mu :$context = Mu, *%args --> Nil) {
         $!compiler := nqp::getcomp(nqp::decont($!compiler))
           if nqp::istype($!compiler,Str);
 
         $!context       := nqp::decont($!context);
         $!reset-context := $!context;
 
+        $!context := nqp::eqaddr(nqp::decont($context),Mu)
+          ?? nqp::null()
+          !! $context;
+
         with $lang {
             $!grammar := $_;
             $!actions := .actions;
+        }
+        else {
+            $!grammar := %args<grammar>:exists
+              ?? nqp::decont(%args<grammar>)
+              !! nqp::null;
+            $!actions := %args<actions>:exists
+              ?? nqp::decont(%args<actions>)
+              !! nqp::null;
         }
     }
 
