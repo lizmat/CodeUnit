@@ -4,7 +4,7 @@ use nqp;  # Hopefully will be in core at some point
 my enum Status is export <OK MORE-INPUT CONTROL>;
 
 #- CodeUnit --------------------------------------------------------------------
-class CodeUnit:ver<0.0.10>:auth<zef:lizmat> {
+class CodeUnit:ver<0.0.11>:auth<zef:lizmat> {
 
     # The low level compiler to be used
     has Mu $.compiler is built(:bind) = "Raku";
@@ -38,10 +38,7 @@ class CodeUnit:ver<0.0.10>:auth<zef:lizmat> {
 
         $!context       := nqp::decont($!context);
         $!reset-context := $!context;
-
-        $!context := nqp::eqaddr(nqp::decont($context),Mu)
-          ?? nqp::null()
-          !! $context;
+        $!context       := nqp::null if nqp::eqaddr($!context,Mu);
 
         with $lang {
             $!grammar := $_;
